@@ -1,6 +1,6 @@
 # Filebeat with grok, javascript , avro schema
 ## The not so lightweight shipper
-[Example](https://github.com/vortex314/beats/tree/master/filebeat/fb.yml)
+[Example]( forkfrom:https://github.com/vortex314/beats/tree/master/filebeat/fb.yml)
 
 The filebeat version that does everything to enable local processing before pushing events.
 
@@ -9,6 +9,8 @@ It contains :
 -	grok pattern matching to extract fields from text
 -	timestamp parser to extract time , date in native format
 -	Javascript engine to do everything you cannot do with grok
+-	lua engine to do everything you cannot do with grok
+-	field split to just split message by sperator
 -	AVRO codec to send this in a regular schema to kafka
 
 ![The Flow](https://github.com/vortex314/beats/blob/master/filebeat/docs/Filebeat%2B%2B.png)
