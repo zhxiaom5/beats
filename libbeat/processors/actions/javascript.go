@@ -81,22 +81,21 @@ func (f *javaScriptEngine) Run(event *beat.Event) (*beat.Event, error) {
 	var errors []string
 	//	message, _ := event.Fields.GetValue("message")
 	// call the JS process function
-	_, er := f.Engine.Call("process", nil, event)
+	addFields, er := f.Engine.Call("process", nil, event)
 	//	fmt.Println(fields)
 	if er != nil {
 		f.logger.Warn("javascript error occured ", er)
 	}
 	// convert added fields from JS type to native Go
-	for k, v := range event.Fields {
-		switch v.(type) {
-		case otto.Value:
-			val, err := v.(otto.Value).Export()
-			if err != nil {
-				f.logger.Warn("cannot convert variable ", k, v, er)
-			} else {
-				event.PutValue(k, val)
+	val, err := addFields.Export()
+	if err != nil {
+		f.logger.Warn("cannot convert variable ", addFields, er)
+	} else {
+		vv, ok := val.(map[string]interface{})
+		if ok {
+			for kkk, vvv := range vv {
+				event.PutValue(kkk, vvv)
 			}
-		default:
 		}
 	}
 
@@ -109,3 +108,4 @@ func (f *javaScriptEngine) Run(event *beat.Event) (*beat.Event, error) {
 func (f *javaScriptEngine) String() string {
 	return "javascript_file=" + f.File
 }
+

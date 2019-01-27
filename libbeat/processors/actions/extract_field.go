@@ -29,27 +29,22 @@ import (
 type extract_field struct {
 	Field     string
 	Separator string
-	Index     int
-	Target    string
+	SepKeys    string
 }
-
-/*
-This one won't be registered (yet)
 
 func init() {
 	processors.RegisterPlugin("extract_field",
 		configChecked(NewExtractField,
-			requireFields("field", "separator", "index", "target"),
-			allowedFields("field", "separator", "index", "target", "when")))
+			requireFields("field", "separator", "sepkeys"),
+			allowedFields("field", "separator", "sepkeys", "when")))
 }
-*/
+
 
 func NewExtractField(c *common.Config) (processors.Processor, error) {
 	config := struct {
 		Field     string `config:"field"`
 		Separator string `config:"separator"`
-		Index     int    `config:"index"`
-		Target    string `config:"target"`
+		SepKeys   string  `config:"sepkeys"`
 	}{}
 	err := c.Unpack(&config)
 	if err != nil {
@@ -66,8 +61,7 @@ func NewExtractField(c *common.Config) (processors.Processor, error) {
 	f := &extract_field{
 		Field:     config.Field,
 		Separator: config.Separator,
-		Index:     config.Index,
-		Target:    config.Target,
+		SepKeys:     config.SepKeys,
 	}
 	return f, nil
 }
@@ -84,26 +78,24 @@ func (f *extract_field) Run(event *beat.Event) (*beat.Event, error) {
 	}
 
 	parts := strings.Split(value, f.Separator)
-	parts = deleteEmpty(parts)
-	if len(parts) < f.Index+1 {
-		return event, fmt.Errorf("index is out of range for field '%s'", f.Field)
-	}
+    
+	lengthofparts := len(parts)
+	keynames := strings.Split(f.SepKeys, ",")
+    
+    fmt.Println(f.SepKeys)
+    fmt.Println(keynames,parts)
 
-	event.PutValue(f.Target, parts[f.Index])
+	//need use keynames to combine two list
+	for keyseq,keyname :=range keynames {
+			if (keyseq > lengthofparts +1) {
+				continue
+			}
+			event.PutValue(keyname, parts[keyseq])
+	}
 
 	return event, nil
 }
 
 func (f extract_field) String() string {
-	return "extract_field=" + f.Target
-}
-
-func deleteEmpty(s []string) []string {
-	var r []string
-	for _, str := range s {
-		if str != "" {
-			r = append(r, str)
-		}
-	}
-	return r
+	return "extract_field=root"
 }
