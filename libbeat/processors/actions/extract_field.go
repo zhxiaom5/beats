@@ -82,12 +82,9 @@ func (f *extract_field) Run(event *beat.Event) (*beat.Event, error) {
 	lengthofparts := len(parts)
 	keynames := strings.Split(f.SepKeys, ",")
     
-    fmt.Println(f.SepKeys)
-    fmt.Println(keynames,parts)
-
 	//need use keynames to combine two list
 	for keyseq,keyname :=range keynames {
-			if (keyseq > lengthofparts +1) {
+			if (keyseq >= lengthofparts) {
 				continue
 			}
 			event.PutValue(keyname, parts[keyseq])

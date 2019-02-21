@@ -8,14 +8,14 @@ processors:
 #- grok:
 #    patterns: ["%{SYSLOGTIMESTAMP:timestamp} %{SYSLOGHOST:host} %{DATA:component}(?:\\[%{POSINT:forget}\\])?: %{GREEDYDATA:syslog_message}"]
 #    timestamps: ["Jan _2 15:04:05"]
-#- javascript:
-#    file: "fb.js"
+- javascript:
+    file: "js/fb.js"
 #- extract_field:
 #    field: message 
 #    separator: \u0001 
 #    sepkeys: key1,key2,key3 
-- gopherlua:
-    file: "fb.lua"
+#- gopherlua:
+#    file: "fb.lua"
     
       
 output.console:
