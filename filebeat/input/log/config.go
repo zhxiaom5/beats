@@ -98,6 +98,7 @@ type config struct {
 
 	ExcludeLines []match.Matcher   `config:"exclude_lines"`
 	IncludeLines []match.Matcher   `config:"include_lines"`
+	ContainStrings []string    `config:"contain_strings"`
 	MaxBytes     int               `config:"max_bytes" validate:"min=0,nonzero"`
 	Multiline    *multiline.Config `config:"multiline"`
 	JSON         *readjson.Config  `config:"json"`

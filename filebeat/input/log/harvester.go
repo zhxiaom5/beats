@@ -36,6 +36,7 @@ import (
 	"os"
 	"sync"
 	"time"
+    "strings"
 
 	"github.com/satori/go.uuid"
 	"golang.org/x/text/transform"
@@ -399,6 +400,18 @@ func (h *Harvester) shouldExportLine(line string) bool {
 			return false
 		}
 	}
+
+	//check if line has any contain string
+	if len(h.config.ContainStrings) > 0 {
+		for _, ContainString := range h.config.ContainStrings {
+        	if strings.Contains(line, ContainString) {
+            	return true
+        	}
+    	}
+	    logp.Debug("harvester", "Drop line as it does not match any of the containstrings %s", line)
+		return false
+	}
+
 	if len(h.config.ExcludeLines) > 0 {
 		if harvester.MatchAny(h.config.ExcludeLines, line) {
 			// drop line
